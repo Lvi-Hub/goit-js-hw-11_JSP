@@ -1,19 +1,18 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-//--
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import { jsonPlaceholderAPI } from './fetchPictures.js';
-//
 import markupSearchPictures from './templates/pictures-list.hbs';
-const ref = {
+
+const refs = {
   submitEl: document.querySelector('#search-form'),
   picturesGallery: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.load-more'),
 };
+refs.btnLoadMore.addEventListener('click', onLoadBtn);
+refs.submitEl.addEventListener('submit', inputSearch);
 
-ref.submitEl = addEventListener('submit', inputSearch);
-ref.btnLoadMore = addEventListener('click', loadMore);
 //--
 const jsonPlaceholderApi = new jsonPlaceholderAPI();
 //--
@@ -44,15 +43,14 @@ function inputSearch(e) {
         );
         return;
       }
-      ref.picturesGallery.innerHTML = '';
-      ref.picturesGallery.insertAdjacentHTML(
+      refs.picturesGallery.innerHTML = '';
+      refs.picturesGallery.insertAdjacentHTML(
         'beforeend',
         markupSearchPictures(data.hits)
       );
-      console.log(data);
-      console.log();
       lightbox.refresh();
-
+      refs.btnLoadMore.classList.remove('is-hidden');
+      console.log(data);
       console.log(jsonPlaceholderApi.page);
     })
     .catch(err => {
@@ -60,18 +58,27 @@ function inputSearch(e) {
     });
 }
 
-function loadMore() {
+function onLoadBtn() {
   jsonPlaceholderApi.page += 1;
   jsonPlaceholderApi
     .fetchPictures()
     .then(({ data }) => {
-      ref.picturesGallery.insertAdjacentHTML(
+      refs.picturesGallery.insertAdjacentHTML(
         'beforeend',
         markupSearchPictures(data.hits)
       );
       console.log(data);
       console.log();
       lightbox.refresh();
+      if (
+        jsonPlaceholderApi.per_page * jsonPlaceholderApi.page >=
+        data.totalHits
+      ) {
+        refs.btnLoadMore.classList.add('is-hidden');
+        Notiflix.Notify.info(
+          'Sorry, this was the last picture form this collection.'
+        );
+      }
     })
     .catch(err => {
       console.log(err);

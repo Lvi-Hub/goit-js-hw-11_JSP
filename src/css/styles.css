@@ -85,7 +85,7 @@ img {
 
 .load-more {
   display: block;
-  margin: 0 auto;
+  margin: 20px auto;
   margin-bottom: 100px;
   min-width: 150px;
   height: 40px;
@@ -95,6 +95,11 @@ img {
   border-radius: 5px;
 }
 
+.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 /* .title-item {
   display: flex;
   align-items: center;
