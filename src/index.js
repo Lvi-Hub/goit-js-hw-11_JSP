@@ -56,6 +56,9 @@ async function inputSearch(e) {
     lightbox.refresh();
     if (data.total > jsonPlaceholderApi.per_page)
       refs.btnLoadMore.classList.remove('is-hidden');
+    else {
+      refs.btnLoadMore.classList.add('is-hidden');
+    }
   } catch (err) {
     console.log(err);
   }
