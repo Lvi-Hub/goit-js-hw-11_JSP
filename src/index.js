@@ -22,65 +22,62 @@ var lightbox = new SimpleLightbox('.gallery a', {
 });
 //--
 
-function inputSearch(e) {
+async function inputSearch(e) {
   e.preventDefault();
   let searchName = e.target.elements.searchQuery.value.trim();
   jsonPlaceholderApi.searchName = searchName;
   console.log(searchName);
   //--
   jsonPlaceholderApi.page = 1;
-  jsonPlaceholderApi
-    .fetchPictures()
-    .then(({ data }) => {
-      if (searchName === '') {
-        Notiflix.Notify.failure('Please full fill form and try again.');
-        return;
-      }
+  try {
+    const { data } = await jsonPlaceholderApi.fetchPictures();
 
-      if (data.total === 0) {
-        Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-        return;
-      }
-      refs.picturesGallery.innerHTML = '';
-      refs.picturesGallery.insertAdjacentHTML(
-        'beforeend',
-        markupSearchPictures(data.hits)
+    if (searchName === '') {
+      Notiflix.Notify.failure('Please full fill form and try again.');
+      return;
+    }
+
+    if (data.total === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
       );
-      lightbox.refresh();
-      refs.btnLoadMore.classList.remove('is-hidden');
-      console.log(data);
-      console.log(jsonPlaceholderApi.page);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+      return;
+    }
+    refs.picturesGallery.innerHTML = '';
+    refs.picturesGallery.insertAdjacentHTML(
+      'beforeend',
+      markupSearchPictures(data.hits)
+    );
+    lightbox.refresh();
+    refs.btnLoadMore.classList.remove('is-hidden');
+    console.log(data);
+    console.log(jsonPlaceholderApi.page);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-function onLoadBtn() {
+async function onLoadBtn() {
   jsonPlaceholderApi.page += 1;
-  jsonPlaceholderApi
-    .fetchPictures()
-    .then(({ data }) => {
-      refs.picturesGallery.insertAdjacentHTML(
-        'beforeend',
-        markupSearchPictures(data.hits)
+  try {
+    const { data } = await jsonPlaceholderApi.fetchPictures();
+    refs.picturesGallery.insertAdjacentHTML(
+      'beforeend',
+      markupSearchPictures(data.hits)
+    );
+    console.log(data);
+    console.log();
+    lightbox.refresh();
+    if (
+      jsonPlaceholderApi.per_page * jsonPlaceholderApi.page >=
+      data.totalHits
+    ) {
+      refs.btnLoadMore.classList.add('is-hidden');
+      Notiflix.Notify.info(
+        'Sorry, this was the last picture form this collection.'
       );
-      console.log(data);
-      console.log();
-      lightbox.refresh();
-      if (
-        jsonPlaceholderApi.per_page * jsonPlaceholderApi.page >=
-        data.totalHits
-      ) {
-        refs.btnLoadMore.classList.add('is-hidden');
-        Notiflix.Notify.info(
-          'Sorry, this was the last picture form this collection.'
-        );
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    });
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }

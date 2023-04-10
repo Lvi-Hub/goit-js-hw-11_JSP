@@ -8,17 +8,21 @@ export class jsonPlaceholderAPI {
   page = 1;
   per_page = 40;
 
-  fetchPictures() {
-    return axios.get(`${this.#BASE_URL}?key=${this.#API_KEY}`, {
-      params: {
-        q: this.searchName,
-        page: this.page,
-        per_page: this.per_page,
-        image_type: 'photo',
-        orientation: 'horizontal',
-        safesearch: true,
-      },
-    });
+  async fetchPictures() {
+    try {
+      return await axios.get(`${this.#BASE_URL}?key=${this.#API_KEY}`, {
+        params: {
+          q: this.searchName,
+          page: this.page,
+          per_page: this.per_page,
+          image_type: 'photo',
+          orientation: 'horizontal',
+          safesearch: true,
+        },
+      });
+    } catch (err) {
+      throw new Error(err.massage);
+    }
   }
 }
 
