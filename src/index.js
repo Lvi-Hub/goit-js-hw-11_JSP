@@ -39,6 +39,7 @@ async function inputSearch(e) {
     const { data } = await jsonPlaceholderApi.fetchPictures();
 
     if (data.total === 0) {
+      refs.btnLoadMore.classList.add('is-hidden');
       refs.picturesGallery.innerHTML = '';
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -50,6 +51,7 @@ async function inputSearch(e) {
       'beforeend',
       markupSearchPictures(data.hits)
     );
+    autoScroll(1);
     Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`);
     lightbox.refresh();
     if (data.total > jsonPlaceholderApi.per_page)
@@ -68,14 +70,7 @@ async function onLoadBtn() {
       markupSearchPictures(data.hits)
     );
     //--При нажатті на кнопку автоматично підскролюється сторінка
-    const { height: cardHeight } = document
-      .querySelector('.gallery')
-      .firstElementChild.getBoundingClientRect();
-
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
-    });
+    autoScroll();
     //--
     lightbox.refresh();
     if (
@@ -89,5 +84,24 @@ async function onLoadBtn() {
     }
   } catch (err) {
     console.log(err);
+  }
+}
+
+//--При нажатті на кнопку автоматично підскролюється сторінка
+function autoScroll(autoHigh) {
+  if (autoHigh === 1) {
+    window.scrollBy({
+      top: 60,
+      behavior: 'smooth',
+    });
+  } else {
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   }
 }
