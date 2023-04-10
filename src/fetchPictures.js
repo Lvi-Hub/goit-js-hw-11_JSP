@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export class jsonPlaceholderAPI {
-  searchName = null;
   #BASE_URL = 'https://pixabay.com/api/';
   #API_KEY = '35236008-ec0292df86782f7461c0757b8';
+  searchName = null;
   query = null;
   page = 1;
   per_page = 40;
@@ -25,13 +25,3 @@ export class jsonPlaceholderAPI {
     }
   }
 }
-
-//   .then(res => {
-//   if (!res.ok) {
-//     throw new Error(res.status);
-//   }
-
-//   return res.json();
-// });
-//   }
-// }

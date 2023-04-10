@@ -10,6 +10,7 @@ const refs = {
   picturesGallery: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.load-more'),
 };
+
 refs.btnLoadMore.addEventListener('click', onLoadBtn);
 refs.submitEl.addEventListener('submit', inputSearch);
 
@@ -26,18 +27,19 @@ async function inputSearch(e) {
   e.preventDefault();
   let searchName = e.target.elements.searchQuery.value.trim();
   jsonPlaceholderApi.searchName = searchName;
-  console.log(searchName);
+
   //--
   jsonPlaceholderApi.page = 1;
+  if (searchName === '') {
+    Notiflix.Notify.failure('Please full fill form and try again.');
+    return;
+  }
+
   try {
     const { data } = await jsonPlaceholderApi.fetchPictures();
 
-    if (searchName === '') {
-      Notiflix.Notify.failure('Please full fill form and try again.');
-      return;
-    }
-
     if (data.total === 0) {
+      refs.picturesGallery.innerHTML = '';
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
@@ -48,10 +50,10 @@ async function inputSearch(e) {
       'beforeend',
       markupSearchPictures(data.hits)
     );
+    Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`);
     lightbox.refresh();
-    refs.btnLoadMore.classList.remove('is-hidden');
-    console.log(data);
-    console.log(jsonPlaceholderApi.page);
+    if (data.total > jsonPlaceholderApi.per_page)
+      refs.btnLoadMore.classList.remove('is-hidden');
   } catch (err) {
     console.log(err);
   }
@@ -65,8 +67,16 @@ async function onLoadBtn() {
       'beforeend',
       markupSearchPictures(data.hits)
     );
-    console.log(data);
-    console.log();
+    //--При нажатті на кнопку автоматично підскролюється сторінка
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+    //--
     lightbox.refresh();
     if (
       jsonPlaceholderApi.per_page * jsonPlaceholderApi.page >=
