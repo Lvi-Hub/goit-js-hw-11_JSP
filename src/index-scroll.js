@@ -22,6 +22,8 @@ var lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 //--
+//--
+//--
 
 async function inputSearch(e) {
   e.preventDefault();
