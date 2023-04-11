@@ -7,7 +7,10 @@ export class jsonPlaceholderAPI {
   query = null;
   page = 1;
   per_page = 40;
-
+  //isLastPage = false;
+  constructor(isLastPage) {
+    this.isLastPage = isLastPage;
+  }
   async fetchPictures() {
     try {
       return await axios.get(`${this.#BASE_URL}?key=${this.#API_KEY}`, {

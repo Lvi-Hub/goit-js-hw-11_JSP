@@ -29,7 +29,7 @@ async function inputSearch(e) {
   jsonPlaceholderApi.searchName = searchName;
   //--
   jsonPlaceholderApi.page = 1;
-
+  jsonPlaceholderApi.isLastPage = false;
   if (searchName === '') {
     Notiflix.Notify.failure('Please full fill form and try again.');
     return;
@@ -72,16 +72,16 @@ async function onLoadBtn() {
       'beforeend',
       markupSearchPictures(data.hits)
     );
-    //--При нажатті на кнопку автоматично підскролюється сторінка
     autoScroll();
-    //--
     lightbox.refresh();
-    if (
-      jsonPlaceholderApi.per_page * jsonPlaceholderApi.page >=
-      data.totalHits
-    ) {
+    jsonPlaceholderApi.isLastPage =
+      jsonPlaceholderApi.per_page * jsonPlaceholderApi.page >= data.totalHits;
+
+    if (jsonPlaceholderApi.isLastPage) {
+      window.removeEventListener('scroll', checkPosition);
+      window.removeEventListener('resize', checkPosition);
       refs.btnLoadMore.classList.add('is-hidden');
-      Notiflix.Notify.info(
+      Notiflix.Notify.success(
         'Sorry, this was the last picture form this collection.'
       );
     }
@@ -89,7 +89,41 @@ async function onLoadBtn() {
     console.log(err);
   }
 }
+//--Scroll
+//--
 
+//--
+var throttle = require('lodash.throttle');
+window.addEventListener('scroll', throttle(checkPosition, 300));
+window.addEventListener('resize', throttle(checkPosition, 300));
+
+function checkPosition() {
+  // 1 Крок: дізнаємося висоту екрану
+  const height = document.body.offsetHeight; //Висота завантаженої 1-ї сторінки
+  const screenHeight = window.innerHeight; // Висота монітора
+
+  // Поточна позиція скоролу
+  const scrolled = window.scrollY;
+
+  // Вирахуємо границю при якій повинно спрацювати завантаження наступної сторінки
+  const threshold = height - screenHeight / 4;
+
+  // Вираховуємо положення скролу у відношенні до кінця сторінки
+  const position = scrolled + screenHeight;
+
+  // Як що ми перетнули границю - підвантажуємо нову сторінку
+  if (position >= threshold && !jsonPlaceholderApi.isLastPage) {
+    onLoadBtn();
+  }
+  // console.log(jsonPlaceholderApi.page);
+  console.log(jsonPlaceholderApi.isLastPage);
+  // console.log(`height:${height}`);
+  // console.log(`screenHeight:${screenHeight}`);
+  // console.log(`scrolled:${scrolled}`);
+  // console.log(`threshold:${threshold}`);
+  // console.log(`position:${position}`);
+  // console.log(`========================`);
+}
 //--При нажатті на кнопку автоматично підскролюється сторінка
 function autoScroll(autoHigh) {
   if (autoHigh === 1) {
@@ -108,3 +142,5 @@ function autoScroll(autoHigh) {
     });
   }
 }
+//--
+console.log(jsonPlaceholderApi);
