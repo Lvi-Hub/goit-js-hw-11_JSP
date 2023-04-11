@@ -1,16 +1,37 @@
 {{#each this}}
-  <div class='photo-card'>
+  <div class='card'>
+    <div class='wrapper'>
+      <a
+        href='https://www.themoviedb.org/{{media_type}}/{{id}}'
+        class='image'
+        title='{{title}}'
+      >
+        <img
+          loading='lazy'
+          class='poster'
+          src='https://image.tmdb.org/t/p/original{{poster_path}}'
+        /></a>
+      {{!-- <div>backdrop_path:{{backdrop_path}}</div>
+      <div>budget:{{budget}}</div>
+      <div>
+       {{#each genres}}       
+          genres:{{this}}
+       {{/each}}
+      <div>backdrop_path:{{backdrop_path}}</div> --}}
+    </div>
+  </div>
+  {{!-- <div class='photo-card'>
     <a class='gallery__item' href='{{largeImageURL}}'>
       <img
         class='gallery__image'
-        src='{{webformatURL}}'
-        alt='{{tags}}'
+        src='{{backdrop_path}}'
+        alt='{{title}}'
         loading='lazy'
       />
     </a>
     <div class='info'>
       <p class='info-item'>
-        <b>Likes</b>{{likes}}
+        <b>Title</b>{{title}}
       </p>
       <p class='info-item'>
         <b>Views</b>{{views}}
@@ -22,6 +43,6 @@
         <b>Downloads</b>{{downloads}}
       </p>
     </div>
-  </div>
+  </div> --}}
 
 {{/each}}

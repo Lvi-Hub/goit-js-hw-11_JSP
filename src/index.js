@@ -26,7 +26,7 @@ var lightbox = new SimpleLightbox('.gallery a', {
 async function inputSearch(e) {
   e.preventDefault();
   let searchName = e.target.elements.searchQuery.value.trim();
-  jsonPlaceholderApi.searchName = searchName;
+  jsonPlaceholderApi.query = searchName;
   //--
   jsonPlaceholderApi.page = 1;
 
@@ -37,8 +37,8 @@ async function inputSearch(e) {
 
   try {
     const { data } = await jsonPlaceholderApi.fetchPictures();
-
-    if (data.total === 0) {
+    console.log({ data });
+    if (data.total_pages === 0) {
       refs.btnLoadMore.classList.add('is-hidden');
       refs.picturesGallery.innerHTML = '';
       Notiflix.Notify.failure(
@@ -49,7 +49,7 @@ async function inputSearch(e) {
     refs.picturesGallery.innerHTML = '';
     refs.picturesGallery.insertAdjacentHTML(
       'beforeend',
-      markupSearchPictures(data.hits)
+      markupSearchPictures(data.results)
     );
     autoScroll(1);
     Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`);
@@ -68,6 +68,7 @@ async function onLoadBtn() {
   jsonPlaceholderApi.page += 1;
   try {
     const { data } = await jsonPlaceholderApi.fetchPictures();
+
     refs.picturesGallery.insertAdjacentHTML(
       'beforeend',
       markupSearchPictures(data.hits)

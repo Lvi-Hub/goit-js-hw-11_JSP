@@ -47,18 +47,18 @@ async function inputSearch(e) {
       return;
     }
     refs.picturesGallery.innerHTML = '';
-    refs.picturesGallery.insertAdjacentHTML(
-      'beforeend',
-      markupSearchPictures(data.hits)
-    );
+    // refs.picturesGallery.insertAdjacentHTML(
+    //   'beforeend',
+    //   markupSearchPictures(data.hits)
+    // );
     autoScroll(1);
     Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`);
     lightbox.refresh();
-    if (data.total > jsonPlaceholderApi.per_page)
-      refs.btnLoadMore.classList.remove('is-hidden');
-    else {
-      refs.btnLoadMore.classList.add('is-hidden');
-    }
+    // if (data.total > jsonPlaceholderApi.per_page)
+    //   refs.btnLoadMore.classList.remove('is-hidden');
+    // else {
+    //   refs.btnLoadMore.classList.add('is-hidden');
+    // }
   } catch (err) {
     console.log(err);
   }
@@ -68,10 +68,10 @@ async function onLoadBtn() {
   jsonPlaceholderApi.page += 1;
   try {
     const { data } = await jsonPlaceholderApi.fetchPictures();
-    refs.picturesGallery.insertAdjacentHTML(
-      'beforeend',
-      markupSearchPictures(data.hits)
-    );
+    // refs.picturesGallery.insertAdjacentHTML(
+    //   'beforeend',
+    //   markupSearchPictures(data.hits)
+    // );
     autoScroll();
     lightbox.refresh();
     jsonPlaceholderApi.isLastPage =
